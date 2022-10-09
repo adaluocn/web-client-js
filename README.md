@@ -1,4 +1,4 @@
-# Apache Web Client JS
+# Web Client JS
 
 [Web Client Js](https://github.com/adaluocn/web-client-js) Client-side JavaScript exception and tracing library.
 
