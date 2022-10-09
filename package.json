@@ -1,16 +1,11 @@
 {
-  "name": "skywalking-client-js",
+  "name": "web-client-js",
   "version": "0.8.0",
-  "description": "Client-side JavaScript exception and tracing library for Apache SkyWalking APM",
+  "description": "Client-side JavaScript exception and tracing library",
   "main": "index.js",
   "types": "lib/src/index.d.ts",
-  "repository": "apache/skywalking-client-js",
-  "homepage": "skywalking.apache.org",
-  "license": "Apache 2.0",
-  "bugs": {
-    "url": "https://github.com/apache/skywalking/issues",
-    "email": "dev@skywalking.apache.org"
-  },
+  "homepage": "",
+  "license": "1.0",
   "devDependencies": {
     "cross-env": "^7.0.3",
     "husky": "^4.3.0",
@@ -52,7 +47,7 @@
     "dist/licenses"
   ],
   "keywords": [
-    "skywalking",
+    "web",
     "observability",
     "apm",
     "distributed-tracing",
