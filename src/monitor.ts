@@ -20,6 +20,10 @@ import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameEr
 import tracePerf from './performance/index';
 import traceSegment, { setConfig } from './trace/segment';
 
+const baseInfo = {
+  platform: navigator.platform, // 浏览器正在运行的操作系统平台
+};
+
 const ClientMonitor = {
   customOptions: {
     collector: location.origin, // report serve
@@ -33,6 +37,7 @@ const ClientMonitor = {
     detailMode: true,
     noTraceOrigins: [],
     traceTimeInterval: 60000, // 1min
+    baseInfo,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
@@ -63,20 +68,20 @@ const ClientMonitor = {
   },
 
   catchErrors(options: CustomOptionsType) {
-    const { service, pagePath, serviceVersion, collector } = options;
+    const { service, pagePath, serviceVersion, collector, baseInfo } = options;
 
     if (options.jsErrors) {
-      JSErrors.handleErrors({ service, pagePath, serviceVersion, collector });
-      PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      JSErrors.handleErrors({ service, pagePath, serviceVersion, collector, baseInfo });
+      PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector, baseInfo });
       if (options.vue) {
-        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, options.vue);
+        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector, baseInfo }, options.vue);
       }
     }
     if (options.apiErrors) {
-      AjaxErrors.handleError({ service, pagePath, serviceVersion, collector });
+      AjaxErrors.handleError({ service, pagePath, serviceVersion, collector, baseInfo });
     }
     if (options.resourceErrors) {
-      ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector, baseInfo });
     }
   },
   setPerformance(configs: CustomReportOptions) {
@@ -87,24 +92,29 @@ const ClientMonitor = {
       useFmp: false,
     };
     this.performance(this.customOptions);
-    const { service, pagePath, serviceVersion, collector } = this.customOptions;
+    const { service, pagePath, serviceVersion, collector, baseInfo } = this.customOptions;
     if (this.customOptions.jsErrors) {
-      JSErrors.setOptions({ service, pagePath, serviceVersion, collector });
-      PromiseErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      JSErrors.setOptions({ service, pagePath, serviceVersion, collector, baseInfo });
+      PromiseErrors.setOptions({ service, pagePath, serviceVersion, collector, baseInfo });
       if (this.customOptions.vue) {
-        VueErrors.setOptions({ service, pagePath, serviceVersion, collector });
+        VueErrors.setOptions({ service, pagePath, serviceVersion, collector, baseInfo });
       }
     }
     if (this.customOptions.apiErrors) {
-      AjaxErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      AjaxErrors.setOptions({ service, pagePath, serviceVersion, collector, baseInfo });
     }
     if (this.customOptions.resourceErrors) {
-      ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector, baseInfo });
     }
     setConfig(this.customOptions);
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
-    FrameErrors.handleErrors(configs, error);
+    const newOptions = {
+      baseInfo,
+      ...configs,
+    };
+
+    FrameErrors.handleErrors(newOptions, error);
   },
 };
 

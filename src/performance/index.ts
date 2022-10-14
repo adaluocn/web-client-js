@@ -61,6 +61,7 @@ class TracePerf {
         pagePath: options.pagePath,
         serviceVersion: options.serviceVersion,
         service: options.service,
+        baseInfo: options.baseInfo,
       };
       new Report('PERF', options.collector).sendByXhr(perfInfo);
       // clear perf data
