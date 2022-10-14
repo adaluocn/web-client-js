@@ -92,7 +92,7 @@ The SDK provides two processing methods for spa pages:
    The SDK provides a set page method to manually update the page name when data is reported. When this method is called, the page PV will be re reported by default. For details, see setPerformance().
 
 ```js
-app.on('routeChange', function(next) {
+app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
     collector: 'http://127.0.0.1:12800',
     service: 'browser-app',
@@ -183,4 +183,30 @@ Vue.config.errorHandler = (error) => {
     error,
   );
 };
+```
+
+### 客户端网关服务器配置
+
+```config
+server {
+        keepalive_requests 120; #单连接请求上限次数。
+        listen       8081;   #监听端口
+        server_name  127.0.0.1;   #监听地址
+        location  / {       #请求的url过滤，正则匹配，~为区分大小写，~*为不区分大小写。
+            root /Users/chenfei/study/vue01/dist/;  # 这个路径是存放打包后的 前端项目dist的路径
+            index index.html;         # 访问入口文件
+        }
+     # 切记， 在docker启动的nginx 必须将该文件中所有的 localhost 改成服务器的 内网ip （不能为 127.0.0.1）
+           location /browser {
+               proxy_set_header   Host $host:$server_port;
+               proxy_redirect off;
+               proxy_set_header X-Real-IP $remote_addr;
+               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+               proxy_connect_timeout 60;
+               proxy_read_timeout 600;
+               proxy_send_timeout 600;
+               proxy_pass http://127.0.0.1:12800/browser;
+           }
+
+ }
 ```
