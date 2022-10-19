@@ -19,40 +19,12 @@ import { CustomOptionsType, CustomReportOptions } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
 import traceSegment, { setConfig } from './trace/segment';
+import util from './util';
 
-function getBroswer() {
-  var sys: any = {};
-  var ua = navigator.userAgent.toLowerCase();
-  var s;
-  (s = ua.match(/edge\/([\d.]+)/))
-    ? (sys.edge = s[1])
-    : (s = ua.match(/rv:([\d.]+)\) like gecko/))
-    ? (sys.ie = s[1])
-    : (s = ua.match(/msie ([\d.]+)/))
-    ? (sys.ie = s[1])
-    : (s = ua.match(/firefox\/([\d.]+)/))
-    ? (sys.firefox = s[1])
-    : (s = ua.match(/chrome\/([\d.]+)/))
-    ? (sys.chrome = s[1])
-    : (s = ua.match(/opera.([\d.]+)/))
-    ? (sys.opera = s[1])
-    : (s = ua.match(/version\/([\d.]+).*safari/))
-    ? (sys.safari = s[1])
-    : 0;
-
-  if (sys.edge) return { broswer: 'Edge', version: sys.edge };
-  if (sys.ie) return { broswer: 'IE', version: sys.ie };
-  if (sys.firefox) return { broswer: 'Firefox', version: sys.firefox };
-  if (sys.chrome) return { broswer: 'Chrome', version: sys.chrome };
-  if (sys.opera) return { broswer: 'Opera', version: sys.opera };
-  if (sys.safari) return { broswer: 'Safari', version: sys.safari };
-
-  return { broswer: '', version: '0' };
-}
-const broswerInfo = getBroswer();
+const broswerInfo = util.getBroswer();
 
 const baseInfo = {
-  platform: navigator.platform, // 浏览器正在运行的操作系统平台
+  system: util.getSystem(), // 浏览器正在运行的操作系统平台
   broswer: broswerInfo.broswer, // 浏览器 比如 chrome
   version: broswerInfo.version, // 浏览器版本 比如 106.0.0.0
 };
