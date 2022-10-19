@@ -1,6 +1,6 @@
 {
   "name": "web-client-js",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Client-side JavaScript exception and tracing library",
   "main": "index.js",
   "types": "lib/src/index.d.ts",
